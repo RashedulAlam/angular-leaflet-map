@@ -8,6 +8,13 @@ import * as L from 'leaflet';
 })
 export class MapComponent implements AfterViewInit {
   private map: any;
+  private popup = L.popup();
+
+  constructor() {}
+
+  ngAfterViewInit(): void {
+    this.initMap();
+  }
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -29,22 +36,23 @@ export class MapComponent implements AfterViewInit {
 
     const icon = {
       icon: L.icon({
-        iconSize: [ 25, 41 ],
-        iconAnchor: [ 13, 0 ],
-        // specify the path here
-        iconUrl: './node_modules/leaflet/dist/images/marker-icon.png',
-        shadowUrl: './node_modules/leaflet/dist/images/marker-shadow.png'
-     })
-  };
-    L.marker([60.45451, 22.264824])
+        iconSize: [25, 41],
+        iconAnchor: [13, 0],
+        iconUrl: 'assets/marker-icon.png',
+        shadowUrl: 'assets/marker-shadow.png',
+      }),
+    };
+
+    L.marker([60.45451, 22.264824], icon)
       .addTo(this.map)
       .bindPopup('I current live on this city.')
       .openPopup();
-  }
 
-  constructor() {}
-
-  ngAfterViewInit(): void {
-    this.initMap();
+    this.map.on('click', (e: any) => {
+      this.popup
+        .setLatLng(e.latlng)
+        .setContent('You clicked the map at ' + e.latlng.toString())
+        .openOn(this.map);
+    });
   }
 }
