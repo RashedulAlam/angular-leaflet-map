@@ -71,7 +71,7 @@ export class MapComponent implements AfterViewInit {
 
     this.map.addControl(drawControl);
 
-    this.map.on(L.Draw.Event.CREATED, function (e: any) {
+    this.map.on('draw:created', (e: any) => {
       var type = e.layerType,
         layer = e.layer;
 
