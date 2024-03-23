@@ -10,7 +10,13 @@ L.Icon.Default.imagePath = 'assets/';
   styleUrl: './map.component.scss',
 })
 export class MapComponent implements AfterViewInit {
-  @Input() config?: IMapConfig = { addDrawingTool: false, addOnClick: false };
+  @Input() config?: IMapConfig = {
+    addDrawingTool: false,
+    addOnClick: false,
+    addDefaultmarker: false,
+    addDefaultLayer: true,
+    addWmslayers: false,
+  };
 
   private map: any;
   private popup = L.popup();
@@ -37,14 +43,20 @@ export class MapComponent implements AfterViewInit {
 
     tiles.addTo(this.map);
 
-    L.marker([60.45451, 22.264824])
-      .addTo(this.map)
-      .bindPopup('I current live on this city.')
-      .openPopup();
+    this.config?.addDefaultmarker && this.addMyLocationMarker();
 
     this.config?.addOnClick && this.addOnClick();
 
     this.config?.addDrawingTool && this.editMapTools();
+
+    this.config?.addWmslayers && this.addWmsLayers();
+  }
+
+  private addMyLocationMarker(): void {
+    L.marker([60.45451, 22.264824])
+      .addTo(this.map)
+      .bindPopup('I current live on this city.')
+      .openPopup();
   }
 
   private addOnClick(): void {
@@ -81,5 +93,68 @@ export class MapComponent implements AfterViewInit {
 
       editableLayers.addLayer(layer);
     });
+  }
+
+  private addWmsLayers(): void {
+    const basemaps = {
+      OpenSteetMap: L.tileLayer(
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+          maxZoom: 18,
+          minZoom: 3,
+          attribution:
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        }
+      ),
+      Clouds: L.tileLayer.wms(
+        'https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=88d7ef27b3134a995fe787193e9cda72',
+        {
+          layers: 'clouds_new',
+        }
+      ),
+      Precipitation: L.tileLayer.wms(
+        'https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=88d7ef27b3134a995fe787193e9cda72',
+        {
+          layers: 'precipitation_new',
+        }
+      ),
+      WindSpeed: L.tileLayer.wms(
+        'https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=88d7ef27b3134a995fe787193e9cda72',
+        {
+          layers: 'wind_new',
+        }
+      ),
+      Temperature: L.tileLayer.wms(
+        'https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=88d7ef27b3134a995fe787193e9cda72',
+        {
+          layers: 'temp_new',
+        }
+      ),
+      Topography: L.tileLayer.wms('http://ows.mundialis.de/services/service?', {
+        layers: 'TOPO-WMS',
+      }),
+
+      Places: L.tileLayer.wms('http://ows.mundialis.de/services/service?', {
+        layers: 'OSM-Overlay-WMS',
+      }),
+
+      'Topography, then places': L.tileLayer.wms(
+        'http://ows.mundialis.de/services/service?',
+        {
+          layers: 'TOPO-WMS,OSM-Overlay-WMS',
+        }
+      ),
+
+      'Places, then topography': L.tileLayer.wms(
+        'http://ows.mundialis.de/services/service?',
+        {
+          layers: 'OSM-Overlay-WMS,TOPO-WMS',
+        }
+      ),
+    };
+
+    L.control.layers(basemaps).addTo(this.map);
+
+    basemaps.Temperature.addTo(this.map);
   }
 }
