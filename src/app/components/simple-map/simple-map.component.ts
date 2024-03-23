@@ -10,5 +10,6 @@ export class SimpleMapComponent {
   mapConfig: IMapConfig = {
     addDrawingTool: false,
     addOnClick: true,
+    addDefaultmarker: true,
   };
 }
