@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
+import 'leaflet.markercluster';
 import { IMapConfig } from '../../models/map';
 L.Icon.Default.imagePath = 'assets/';
 
@@ -16,6 +17,8 @@ export class MapComponent implements AfterViewInit {
     addDefaultmarker: false,
     addDefaultLayer: true,
     addWmslayers: false,
+    addMarkerClusters: false,
+    useUSACenter: false,
   };
 
   private map: any;
@@ -26,8 +29,11 @@ export class MapComponent implements AfterViewInit {
   }
 
   private initMap(): void {
+    const center: any = this.config?.useUSACenter
+      ? [39.742043, -104.991531]
+      : [60.45451, 22.264824];
     this.map = L.map('map', {
-      center: [60.45451, 22.264824],
+      center: center,
       zoom: 6,
     });
 
@@ -50,6 +56,8 @@ export class MapComponent implements AfterViewInit {
     this.config?.addDrawingTool && this.editMapTools();
 
     this.config?.addWmslayers && this.addWmsLayers();
+
+    this.config?.addMarkerClusters && this.addMarkerClusters();
   }
 
   private addMyLocationMarker(): void {
@@ -73,6 +81,20 @@ export class MapComponent implements AfterViewInit {
     this.map.addLayer(drawnItems);
 
     const editableLayers = new L.FeatureGroup();
+
+    L.marker([60.45451, 22.264824])
+    .bindPopup("<b>Hello world!</b><br>I am a popup.")
+    .addTo(editableLayers);
+
+    L.marker([60.45451, 23.264824])
+    .bindPopup("<b>Hello world!</b><br>I am a popup.")
+    .addTo(editableLayers);
+
+    L.marker([60.45451, 24.264824])
+    .bindPopup("<b>Hello world!</b><br>I am a popup.")
+    .addTo(editableLayers);
+
+
     this.map.addLayer(editableLayers);
 
     const drawControl = new L.Control.Draw({
@@ -156,5 +178,28 @@ export class MapComponent implements AfterViewInit {
     L.control.layers(basemaps).addTo(this.map);
 
     basemaps.Temperature.addTo(this.map);
+  }
+
+  private addMarkerClusters(): void {
+    fetch(
+      'https://raw.githubusercontent.com/geodav-tech/open-source-web-mapping-workshop/master/demos/data/climbs.geojson'
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        var clusteredPoints = L.markerClusterGroup();
+        var climbsGeojsonMarkers = L.geoJson(data, {
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup(feature.properties.Name);
+          },
+        });
+        clusteredPoints.addLayer(climbsGeojsonMarkers);
+
+        this.map.addLayer(clusteredPoints);
+      });
   }
 }

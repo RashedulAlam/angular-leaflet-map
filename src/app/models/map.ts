@@ -4,4 +4,6 @@ export interface IMapConfig {
   addDefaultmarker: boolean;
   addDefaultLayer?: boolean;
   addWmslayers?: boolean;
+  addMarkerClusters?: boolean;
+  useUSACenter?: boolean;
 }

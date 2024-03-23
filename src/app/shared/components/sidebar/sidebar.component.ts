@@ -23,7 +23,7 @@ export class SidebarComponent {
     {
       name: 'Map with Layers',
       id: 'map-with-layers',
-      icon: 'other',
+      icon: 'layer',
       url: '/map-layers',
     },
     {
