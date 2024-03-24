@@ -191,7 +191,7 @@ export class MapComponent implements AfterViewInit {
         return response.json();
       })
       .then((data) => {
-        var clusteredPoints = L.markerClusterGroup();
+        var clusteredPoints = new window.L.MarkerClusterGroup();
         var climbsGeojsonMarkers = L.geoJson(data, {
           onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties.Name);
