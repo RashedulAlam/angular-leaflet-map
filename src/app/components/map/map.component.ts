@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-draw';
-import * as L1 from 'leaflet.markercluster';
+import 'leaflet.markercluster';
 import { IMapConfig } from '../../models/map';
 L.Icon.Default.imagePath = 'assets/';
 
