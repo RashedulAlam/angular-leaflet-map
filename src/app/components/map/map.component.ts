@@ -100,6 +100,9 @@ export class MapComponent implements AfterViewInit {
       edit: {
         featureGroup: editableLayers,
       },
+      draw: {
+        rectangle: false,
+      },
     });
 
     this.map.addControl(drawControl);
