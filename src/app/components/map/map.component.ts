@@ -83,23 +83,25 @@ export class MapComponent implements AfterViewInit {
     const editableLayers = new L.FeatureGroup();
 
     L.marker([60.45451, 22.264824])
-    .bindPopup("<b>Hello world!</b><br>I am a popup.")
-    .addTo(editableLayers);
+      .bindPopup('<b>Hello world!</b><br>I am a popup.')
+      .addTo(editableLayers);
 
     L.marker([60.45451, 23.264824])
-    .bindPopup("<b>Hello world!</b><br>I am a popup.")
-    .addTo(editableLayers);
+      .bindPopup('<b>Hello world!</b><br>I am a popup.')
+      .addTo(editableLayers);
 
     L.marker([60.45451, 24.264824])
-    .bindPopup("<b>Hello world!</b><br>I am a popup.")
-    .addTo(editableLayers);
-
+      .bindPopup('<b>Hello world!</b><br>I am a popup.')
+      .addTo(editableLayers);
 
     this.map.addLayer(editableLayers);
 
     const drawControl = new L.Control.Draw({
       edit: {
         featureGroup: editableLayers,
+      },
+      draw: {
+        rectangle: false,
       },
     });
 
